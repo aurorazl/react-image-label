@@ -5,31 +5,37 @@ import dataStore from '../global-store'
 import { LazyLoadImage, trackWindowScroll } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import LazyLoad from 'react-image-lazy-load';
-
+import axios from "axios";
+import base64 from 'base-64'
+import {backEndUrl} from '../config'
 
 export default class TaskList extends React.Component {
     constructor(props) {
         super(props)
-        this.data = {
-            "ImgIDs": [
-                546823,
-                546823,
-                546823,
-                546823,
-                546823,
-                546823,
-            ]
+        this.state = {
+            data:{ImgIDs:[]}
         }
-
+        this.getData()
     }
     componentDidMount() {
 
     }
+    getData() {
+        var _this = this
+        axios.get(backEndUrl+'api/image/'+this.props.match.params.dataSetId, { headers: { 'Authorization': "Bearer " + cookie.load("token") } }).then(
+            function (response) {
+                console.log(response)
+                if (response.status == 200) {
+                    _this.setState({ data: JSON.parse(base64.decode(response.data)).Data })
 
+                }
+            }
+        )
+    }
     render() {
-        const imageList = this.data.ImgIDs
+        const imageList = this.state.data.ImgIDs
         const imageItemList = imageList.map((one) =>
-            <div>
+            <div key={one}>
                 {one + '.jpg'}
                 <a href={"/taskDetail/" + this.props.match.params.dataSetId + "/" + one}>
                     <LazyLoad height={500} imageProps={{

@@ -231,6 +231,7 @@ class LabelingApp extends Component {
       models,
       makePrediction,
     } = this.props;
+
     const {
       selected,
       selectedFigureId,
@@ -249,7 +250,11 @@ class LabelingApp extends Component {
 
     let selectedFigure = null;
     const allFigures = [];
+    
     labels.forEach((label, i) => {
+      if(!figures.hasOwnProperty(label.id)){
+        figures[label.id]=[]
+      }
       figures[label.id].forEach(figure => {
         if (
           toggles[label.id] &&
@@ -342,11 +347,11 @@ class LabelingApp extends Component {
           })
         );
       };
-
       toolbarDOM = (
         <PathToolbar style={toolbarStyle} onChange={handler} {...options} />
       );
     } else if (!selectedFigure && models.length > 0) {
+      
       toolbarDOM = (
         <MakePredictionToolbar
           style={toolbarStyle}

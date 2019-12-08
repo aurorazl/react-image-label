@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import axios from "axios";
 import base64 from 'base-64'
+import {backEndUrl} from '../config'
 
 var URLSearchParams = require('url-search-params');
 
@@ -29,11 +30,12 @@ export default class DataSetList extends React.Component {
                 // }
             }
         };
-        this.getData()
+        
     }
 
     componentDidMount() {
         this.saveToken()
+        this.getData()
     }
 
     componentWillUnmount() {
@@ -58,9 +60,10 @@ export default class DataSetList extends React.Component {
     }
     getData() {
         var _this = this
-        axios.get('https://localhost:44326/api/image', { headers: { 'Authorization': "Bearer " + cookie.load("token") } }).then(
+        axios.get(backEndUrl+'api/image', { headers: { 'Authorization': "Bearer " + cookie.load("token") } }).then(
             function (response) {
                 if (response.status == 200) {
+                    console.log(base64.decode(response.data))
                     _this.setState({ data: JSON.parse(base64.decode(response.data)).Data })
                 }
             }

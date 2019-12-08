@@ -71,9 +71,9 @@ export function withPredictions(Comp) {
     }
 
     async componentDidMount() {
-      const { fetch } = this.props;
-      const models = await (await fetch('/api/mlmodels')).json();
-      this.setState({ models });
+      // const { fetch } = this.props;
+      // const models = await (await fetch('/api/mlmodels')).json();
+      // this.setState({ models });
     }
 
     render() {
