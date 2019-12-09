@@ -5,7 +5,7 @@ import LabelingApp from './LabelingApp';
 import axios from "axios";
 import base64 from 'base-64'
 import cookie from 'react-cookies'
-import {backEndUrl} from '../config'
+import { backEndUrl } from '../config'
 import AddLabel from './AddLabel'
 
 export default class TaskDetail extends React.Component {
@@ -22,60 +22,60 @@ export default class TaskDetail extends React.Component {
     }
     getData() {
         var _this = this
-        axios.get(backEndUrl+'api/image/'+this.props.match.params.dataSetId+'/'+this.props.match.params.taskId,
-         { headers: { 'Authorization': "Bearer " + cookie.load("token") } }).then(
-            function (response) {
-                if (response.status == 200) {
-                    var data = JSON.parse(base64.decode(response.data)).Data
-                    this.initData = data
-                    console.log("start transform")
-                    var ann = data.annotations
-                    var formParts = {}
-                    ann.map((one,index)=>{
-                        var a = one.category_id
-                        var points = []
-                        if(typeof one.segmentation.length =='number'){
-                            var li = one.segmentation[0]
-                            // one.segmentation.forEach(element => {
-                            // });
-                            for(var i=0,len=li.length;i<len;i=i+2){
-                                points.push({"lng":li[i],"lat":li[i+1]})
+        axios.get(backEndUrl + 'api/image/' + this.props.match.params.dataSetId + '/' + this.props.match.params.taskId,
+            { headers: { 'Authorization': "Bearer " + cookie.load("token") } }).then(
+                function (response) {
+                    if (response.status == 200) {
+                        var data = JSON.parse(base64.decode(response.data)).Data
+                        console.log("start transform")
+                        var ann = data.annotations
+                        var formParts = {}
+                        ann.map((one, index) => {
+                            var a = one.category_id
+                            var points = []
+                            if (typeof one.segmentation.length == 'number') {
+                                var li = one.segmentation[0]
+                                // one.segmentation.forEach(element => {
+                                // });
+                                for (var i = 0, len = li.length; i < len; i = i + 2) {
+                                    points.push({ "lng": li[i], "lat": li[i + 1] })
+                                }
+                                if (!formParts.hasOwnProperty(a)) {
+                                    //key
+                                    formParts[a] = [{ id: index, type: "polygon", points: points }]
+                                } else {
+                                    formParts[a].push({ id: index, type: "polygon", points: points })
+                                }
                             }
-                            if(!formParts.hasOwnProperty(a)){
-                                //key
-                                formParts[a]=[{id:index,type:"polygon",points:points}]
-                            }else{
-                                formParts[a].push({id:index,type:"polygon",points:points})
+
+                        })
+                        var a = []
+                        for (var p in formParts) {
+                            a.push({ id: p, type: "polygon", name: dataStore.coco_classes[p] })
+                        }
+                        _this.setState({
+                            project: {
+                                "form": { formParts: a }, id: 1, name: "Test", referenceLink: null, referenceText: null
+                            },
+                            image: {
+                                externalLink: null, id: 4, labeld: 1, lastEdited: 1575603884857,
+                                link: dataStore.azurePath + _this.props.match.params.dataSetId + '/images/' + _this.props.match.params.taskId + '.jpg',
+                                localPath: null, originalName: _this.props.match.params.taskId + ".jpg", projectsId: 1,
+                                labelData: {
+                                    height: 480, width: 640,
+                                    labels: formParts
+                                }
                             }
-                        }
-                        
-                    })
-                    var a = []
-                    for(var p in formParts){
-                        a.push({id:p,type:"polygon",name:dataStore.coco_classes[p]})
+                        });
                     }
-                    _this.setState({project: {
-                        "form": {formParts: a}, id: 1, name: "Test", referenceLink: null, referenceText: null
-                    },
-                    image: {
-                        externalLink: null, id: 4, labeld: 1, lastEdited: 1575603884857, 
-                        link:dataStore.azurePath + _this.props.match.params.dataSetId + '/images/' + _this.props.match.params.taskId + '.jpg',
-                        localPath: null, originalName: _this.props.match.params.taskId+".jpg", projectsId: 1,
-                        labelData: {
-                            height:480,width:640,
-                            labels:formParts
-                        }
-                    }
-                    });
                 }
-            }
-        )
+            )
     }
-    addLabel(labelNumber,labelType){
+    addLabel(labelNumber, labelType) {
         var newProject = this.state.project
         newProject.form.formParts.push(
-            {id:labelNumber,type:labelType,name:dataStore.coco_classes[labelNumber]})
-        this.setState({project:newProject})
+            { id: labelNumber, type: labelType, name: dataStore.coco_classes[labelNumber] })
+        this.setState({ project: newProject })
     }
     async pushUpdate(labelData) {
         // const { imageId } = this.props.match.params;
@@ -87,14 +87,17 @@ export default class TaskDetail extends React.Component {
         //     },
         //     body: JSON.stringify({ labelData }),
         // });
-        this.setState({image:{
-            externalLink: null, id: 4, labeld: 1, lastEdited: 1575603884857, 
-            link:dataStore.azurePath + this.props.match.params.dataSetId + '/images/' + this.props.match.params.taskId + '.jpg',
-            localPath: null, originalName: this.props.match.params.taskId+".jpg", projectsId: 1,
-            labelData: {
-                height:480,width:640,
-                labels:labelData
-            }}}
+        this.setState({
+            image: {
+                externalLink: null, id: 4, labeld: 1, lastEdited: 1575603884857,
+                link: dataStore.azurePath + this.props.match.params.dataSetId + '/images/' + this.props.match.params.taskId + '.jpg',
+                localPath: null, originalName: this.props.match.params.taskId + ".jpg", projectsId: 1,
+                labelData: {
+                    height: 480, width: 640,
+                    labels: labelData
+                }
+            }
+        }
         )
     }
     async fetch(...args) {
@@ -102,24 +105,24 @@ export default class TaskDetail extends React.Component {
         return await fetch(...args);
     }
     async markComplete() {
-        await this.fetch(backEndUrl+'api/image/'+this.props.match.params.dataSetId+'/'+this.props.match.params.taskId, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': "Bearer " + cookie.load("token")
-          },
-          body:"'"+base64.encode(JSON.stringify(this.state))+"'",
-        }).then((response)=>{
-            if(response.status!==200){
+        await this.fetch(backEndUrl + 'api/image/' + this.props.match.params.dataSetId + '/' + this.props.match.params.taskId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + cookie.load("token")
+            },
+            body: "'" + base64.encode(JSON.stringify(this.state)) + "'",
+        }).then((response) => {
+            if (response.status !== 200) {
                 console.log('Problem in fetching');
                 return;
             }
-            response.text().then(data=>console.log(base64.decode(data)))
+            response.text().then(data => console.log(base64.decode(data)))
         }
         );
-        
+
     }
-    tansformToCocoFormat(){
+    tansformToCocoFormat() {
         var data = this.initData
     }
     render() {
@@ -140,7 +143,7 @@ export default class TaskDetail extends React.Component {
             },
             onLabelChange: this.pushUpdate.bind(this),
         };
-        var status = JSON.stringify(this.state.image)!="{}" && JSON.stringify(this.state.project)!="{}"
+        var status = JSON.stringify(this.state.image) != "{}" && JSON.stringify(this.state.project) != "{}"
 
         return (
             // <div className="taskList">
@@ -148,19 +151,19 @@ export default class TaskDetail extends React.Component {
             //     <img src={dataStore.azurePath + this.props.match.params.dataSetId + '/images/' + this.props.match.params.taskId + '.jpg'} />
             // </div>
             <div>
-                {status && 
-                <DocumentMeta title={title}>
-                    <LabelingApp
-                        labels={project.form.formParts}
-                        reference={{ referenceLink, referenceText }}
-                        labelData={image.labelData.labels || {}}
-                        imageUrl={image.link}
-                        fetch={this.fetch.bind(this)}
-                        demo={project.id === 'demo'}
-                        {...props}
-                    />
-                    <AddLabel onAddLabel={this.addLabel} />
-                </DocumentMeta>}
+                {status &&
+                    <DocumentMeta title={title}>
+                        <LabelingApp
+                            labels={project.form.formParts}
+                            reference={{ referenceLink, referenceText }}
+                            labelData={image.labelData.labels || {}}
+                            imageUrl={image.link}
+                            fetch={this.fetch.bind(this)}
+                            demo={project.id === 'demo'}
+                            {...props}
+                        />
+                        <AddLabel onAddLabel={this.addLabel} />
+                    </DocumentMeta>}
             </div>
         )
     }
