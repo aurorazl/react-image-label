@@ -1,0 +1,11 @@
+# Please install docker compose on the target machine by:
+# https://docs.docker.com/compose/install/
+
+version: "1"
+services:
+  webui:
+    image: apulis/image-label
+    ports:
+      - "6601:6601"
+      - "30125:30125"
+
