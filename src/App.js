@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { Component, Fragment } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { HashRouter as Router, Route, Link, Switch } from "react-router-dom";
 import dataSetList from './components/DataSetList'
 import TaskList from './components/TaskList'
 import TaskDetail from './components/TaskDetail'
 import Test from './components/test'
-
 
 export default class App extends React.Component {
   constructor(props) {
@@ -17,13 +16,15 @@ export default class App extends React.Component {
   }
   render() {
     return (
-      <Router>
-        <Switch>
-          <Route exact path="/" component={dataSetList} />
-          <Route exact path="/taskList/:dataSetId" component={TaskList} />
-          <Route exact path="/taskDetail/:dataSetId/:taskId" component={TaskDetail} />
-        </Switch>
-      </Router>
+      <div>
+        <Router>
+          <Switch>
+            <Route exact path="/" component={dataSetList} />
+            <Route exact path="/taskList/:dataSetId" component={TaskList} />
+            <Route exact path="/taskDetail/:dataSetId/:taskId" component={TaskDetail} />
+          </Switch>
+        </Router>
+      </div>
     )
   }
 }

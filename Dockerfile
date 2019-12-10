@@ -16,7 +16,8 @@ RUN rm /etc/nginx/conf.d/default.conf
 ADD default.conf /etc/nginx/conf.d/
 
 # copy from dist to nginx root dir
-COPY --from=builder /app/dist/bingMap/ /usr/share/nginx/html
+COPY --from=builder /app/build/ /usr/share/nginx/html
+COPY --from=builder /app/build/ /etc/nginx/html
 #RUN echo 'http://mirrors.ustc.edu.cn/alpine/v3.9/main/' > '/etc/apk/repositories' && \
 #    echo 'http://mirrors.ustc.edu.cn/alpine/v3.9/community/' >> '/etc/apk/repositories' && \
 RUN echo 'http://mirrors.aliyun.com/alpine/v3.9/main/' > '/etc/apk/repositories' && \
@@ -33,9 +34,8 @@ RUN echo 'http://mirrors.aliyun.com/alpine/v3.9/main/' > '/etc/apk/repositories'
     ssh-keygen -t ed25519 -P "" -f /etc/ssh/ssh_host_ed25519_key && \
     echo -e "apulis2019\napulis2019" | passwd root
 ADD start.sh /
-ADD start_release.sh /
 
-RUN chmod +x /start.sh /start_release.sh
+RUN chmod +x /start.sh
 
 # expose port 6501 30122
 EXPOSE 6601 30125
@@ -44,5 +44,5 @@ EXPOSE 6601 30125
 LABEL maintainer="maesinfo"
 
 # run nginx in foreground
-ENTRYPOINT ./start_release.sh
+ENTRYPOINT ./start.sh
 

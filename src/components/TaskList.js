@@ -7,13 +7,14 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 import LazyLoad from 'react-image-lazy-load';
 import axios from "axios";
 import base64 from 'base-64'
-import {backEndUrl} from '../config'
+import { backEndUrl } from '../config'
+import { withRouter, Link } from "react-router-dom";
 
-export default class TaskList extends React.Component {
+class TaskList extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            data:{ImgIDs:[]}
+            data: { ImgIDs: [] }
         }
         this.getData()
     }
@@ -22,7 +23,7 @@ export default class TaskList extends React.Component {
     }
     getData() {
         var _this = this
-        axios.get(backEndUrl+'api/image/'+this.props.match.params.dataSetId, { headers: { 'Authorization': "Bearer " + cookie.load("token") } }).then(
+        axios.get(backEndUrl + 'api/image/' + this.props.match.params.dataSetId, { headers: { 'Authorization': "Bearer " + cookie.load("token") } }).then(
             function (response) {
                 console.log(response)
                 if (response.status == 200) {
@@ -37,7 +38,7 @@ export default class TaskList extends React.Component {
         const imageItemList = imageList.map((one) =>
             <div key={one}>
                 {one + '.jpg'}
-                <a href={"/taskDetail/" + this.props.match.params.dataSetId + "/" + one}>
+                <Link to={"/taskDetail/" + this.props.match.params.dataSetId + "/" + one}>
                     <LazyLoad height={500} imageProps={{
                         src: dataStore.azurePath + this.props.match.params.dataSetId + '/images/' + one + '.jpg',
                         alt: one + '.jpg',
@@ -45,7 +46,7 @@ export default class TaskList extends React.Component {
                         className: "className"
                     }}
                     />
-                </a>
+                </Link>
             </div>
         )
         // <li key={one.toString()}>{one}
@@ -61,3 +62,5 @@ export default class TaskList extends React.Component {
         )
     }
 }
+
+export default withRouter(TaskList)

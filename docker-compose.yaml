@@ -1,10 +1,10 @@
 # Please install docker compose on the target machine by:
 # https://docs.docker.com/compose/install/
 
-version: "1"
+version: "3"
 services:
   webui:
-    image: apulis/image-label
+    image: apulis/image-label:react-font-0-0
     ports:
       - "6601:6601"
       - "30125:30125"

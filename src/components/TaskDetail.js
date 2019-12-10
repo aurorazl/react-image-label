@@ -7,6 +7,7 @@ import base64 from 'base-64'
 import cookie from 'react-cookies'
 import { backEndUrl } from '../config'
 import AddLabel from './AddLabel'
+import { withRouter, Link } from "react-router-dom";
 
 export default class TaskDetail extends React.Component {
     constructor(props) {
@@ -27,6 +28,7 @@ export default class TaskDetail extends React.Component {
                 function (response) {
                     if (response.status == 200) {
                         var data = JSON.parse(base64.decode(response.data)).Data
+                        _this.imageInfo = data.images
                         console.log("start transform")
                         var ann = data.annotations
                         var formParts = {}
@@ -34,18 +36,16 @@ export default class TaskDetail extends React.Component {
                             var a = one.category_id
                             var points = []
                             if (typeof one.segmentation.length == 'number') {
-                                var li = one.segmentation[0]
-                                // one.segmentation.forEach(element => {
-                                // });
-                                for (var i = 0, len = li.length; i < len; i = i + 2) {
-                                    points.push({ "lng": li[i], "lat": li[i + 1] })
-                                }
-                                if (!formParts.hasOwnProperty(a)) {
-                                    //key
-                                    formParts[a] = [{ id: index, type: "polygon", points: points }]
-                                } else {
-                                    formParts[a].push({ id: index, type: "polygon", points: points })
-                                }
+                                one.segmentation.forEach(element => {
+                                    for (var i = 0, len = element.length; i < len; i = i + 2) {
+                                        points.push({ "lng": element[i], "lat": element[i + 1] })
+                                    }
+                                    if (!formParts.hasOwnProperty(a)) {
+                                        formParts[a] = [{ id: index + i, type: "polygon", points: points }]
+                                    } else {
+                                        formParts[a].push({ id: index + i, type: "polygon", points: points })
+                                    }
+                                });
                             }
 
                         })
@@ -111,7 +111,7 @@ export default class TaskDetail extends React.Component {
                 'Content-Type': 'application/json',
                 'Authorization': "Bearer " + cookie.load("token")
             },
-            body: "'" + base64.encode(JSON.stringify(this.state)) + "'",
+            body: "'" + base64.encode(JSON.stringify(this.tansformToCocoFormat())) + "'",
         }).then((response) => {
             if (response.status !== 200) {
                 console.log('Problem in fetching');
@@ -123,7 +123,16 @@ export default class TaskDetail extends React.Component {
 
     }
     tansformToCocoFormat() {
-        var data = this.initData
+        var sendData = { images: this.imageInfo, annotations: [] }
+        var data = this.state.image.labelData.labels
+        for (var one in data) {
+            data[one].map((o) => {
+                var seg = []
+                o.points.map(i => { seg.push(i.lng); seg.push(i.lat) })
+                sendData["annotations"].push({ "segmentation": seg, "category_id": parseInt(one) })
+            })
+        }
+        return sendData
     }
     render() {
         const title = `Image Label Tool`;
@@ -139,6 +148,7 @@ export default class TaskDetail extends React.Component {
             },
             onSubmit: () => {
                 this.markComplete();
+                this.tansformToCocoFormat();
                 // history.push(`/label/${project.id}/`);
             },
             onLabelChange: this.pushUpdate.bind(this),

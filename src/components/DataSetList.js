@@ -7,11 +7,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import axios from "axios";
 import base64 from 'base-64'
-import {backEndUrl} from '../config'
-
+import { backEndUrl } from '../config'
+import { withRouter, Link } from "react-router-dom";
 var URLSearchParams = require('url-search-params');
 
-export default class DataSetList extends React.Component {
+class DataSetList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -30,7 +30,7 @@ export default class DataSetList extends React.Component {
                 // }
             }
         };
-        
+
     }
 
     componentDidMount() {
@@ -43,6 +43,7 @@ export default class DataSetList extends React.Component {
     }
     saveToken() {
         const token = new URLSearchParams(this.props.location.search).get("token");
+        console.log(token, cookie.load("token"))
         if (token != null) {
             cookie.save("token", token)
             this.handleClick({ vertical: 'top', horizontal: 'left' })
@@ -60,7 +61,7 @@ export default class DataSetList extends React.Component {
     }
     getData() {
         var _this = this
-        axios.get(backEndUrl+'api/image', { headers: { 'Authorization': "Bearer " + cookie.load("token") } }).then(
+        axios.get(backEndUrl + 'api/image', { headers: { 'Authorization': "Bearer " + cookie.load("token") } }).then(
             function (response) {
                 if (response.status == 200) {
                     console.log(base64.decode(response.data))
@@ -120,8 +121,11 @@ function DataSet(props) {
 function DataSetPart(props) {
 
     return (
-        <ListItemLink href={"/taskList/" + props.dataSetId}>
-            <ListItemText primary={props.dataSetInfo.info.name} />
-        </ListItemLink>
+        // <ListItemLink to={"/taskList/" + props.dataSetId}>
+        //     <ListItemText primary={props.dataSetInfo.info.name} />
+        // </ListItemLink>
+        <Link to={"/taskList/" + props.dataSetId}>{props.dataSetInfo.info.name}</Link>
     )
 }
+
+export default withRouter(DataSetList)
