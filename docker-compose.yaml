@@ -4,7 +4,7 @@
 version: "3"
 services:
   webui:
-    image: apulis/image-label:react-font-0-0
+    image: apulistech/image-label:react-font-0-0
     ports:
       - "6601:6601"
       - "30125:30125"
