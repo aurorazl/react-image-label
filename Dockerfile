@@ -17,7 +17,6 @@ ADD default.conf /etc/nginx/conf.d/
 
 # copy from dist to nginx root dir
 COPY --from=builder /app/build/ /usr/share/nginx/html
-COPY --from=builder /app/build/ /etc/nginx/html
 #RUN echo 'http://mirrors.ustc.edu.cn/alpine/v3.9/main/' > '/etc/apk/repositories' && \
 #    echo 'http://mirrors.ustc.edu.cn/alpine/v3.9/community/' >> '/etc/apk/repositories' && \
 RUN echo 'http://mirrors.aliyun.com/alpine/v3.9/main/' > '/etc/apk/repositories' && \

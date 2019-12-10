@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import './App.css';
-import { HashRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import dataSetList from './components/DataSetList'
 import TaskList from './components/TaskList'
 import TaskDetail from './components/TaskDetail'
@@ -17,7 +17,7 @@ export default class App extends React.Component {
   render() {
     return (
       <div>
-        <Router>
+        <Router basename='/image_label/'>
           <Switch>
             <Route exact path="/" component={dataSetList} />
             <Route exact path="/taskList/:dataSetId" component={TaskList} />
