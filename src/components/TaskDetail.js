@@ -8,6 +8,7 @@ import cookie from 'react-cookies'
 import { backEndUrl } from '../config'
 import AddLabel from './AddLabel'
 import { withRouter, Link } from "react-router-dom";
+var URLSearchParams = require('url-search-params');
 
 export default class TaskDetail extends React.Component {
     constructor(props) {
@@ -41,9 +42,9 @@ export default class TaskDetail extends React.Component {
                                         points.push({ "lng": element[i], "lat": element[i + 1] })
                                     }
                                     if (!formParts.hasOwnProperty(a)) {
-                                        formParts[a] = [{ id: index + i, type: "polygon", points: points }]
+                                        formParts[a] = [{ id: (index + i).toString(), type: "polygon", points: points }]
                                     } else {
-                                        formParts[a].push({ id: index + i, type: "polygon", points: points })
+                                        formParts[a].push({ id: (index + i).toString(), type: "polygon", points: points })
                                     }
                                 });
                             }
@@ -104,6 +105,58 @@ export default class TaskDetail extends React.Component {
         const { projectId } = this.props.match.params;
         return await fetch(...args);
     }
+    componentDidMount() {
+        this.refetch();
+      }
+    
+    componentDidUpdate(prevProps) {
+    if (prevProps.match.params.imageId !== this.props.match.params.imageId) {
+        this.refetch();
+    }
+    }
+    
+      async refetch() {
+        this.setState({
+          isLoaded: false,
+          error: null,
+          project: null,
+          image: null,
+        });
+    
+        const { match, history } = this.props;
+        let { projectId, imageId } = match.params;
+    
+        try {
+          const a = document.createElement('a');
+          a.setAttribute('href', '/api/getLabelingInfo');
+          const url = new URL(a.href);
+    
+          url.searchParams.append('projectId', projectId);
+          if (imageId) {
+            url.searchParams.append('imageId', imageId);
+          }
+    
+          const { project, image } = await (await this.fetch(url)).json();
+    
+          if (!project) {
+            history.replace(`/label/${projectId}/over`);
+            return;
+          }
+    
+          history.replace(`/label/${project.id}/${image.id}`);
+    
+          this.setState({
+            isLoaded: true,
+            project,
+            image,
+          });
+        } catch (error) {
+          this.setState({
+            isLoaded: true,
+            error,
+          });
+        }
+      }
     async markComplete() {
         await this.fetch(backEndUrl + 'api/image/' + this.props.match.params.dataSetId + '/' + this.props.match.params.taskId, {
             method: 'POST',
@@ -134,6 +187,7 @@ export default class TaskDetail extends React.Component {
         }
         return sendData
     }
+
     render() {
         const title = `Image Label Tool`;
         const { history } = this.props;
@@ -144,11 +198,12 @@ export default class TaskDetail extends React.Component {
                 history.goBack();
             },
             onSkip: () => {
-                // history.push(`/label/${project.id}/`);
+                const next = new URLSearchParams(this.props.location.search).get("next");
+                history.replace("/taskDetail/" + this.props.match.params.dataSetId + "/" + next);
+
             },
             onSubmit: () => {
                 this.markComplete();
-                this.tansformToCocoFormat();
                 // history.push(`/label/${project.id}/`);
             },
             onLabelChange: this.pushUpdate.bind(this),

@@ -11,7 +11,7 @@ import { backEndUrl } from '../config'
 import { withRouter, Link } from "react-router-dom";
 var URLSearchParams = require('url-search-params');
 
-class DataSetList extends React.Component {
+export default class DataSetList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -127,5 +127,3 @@ function DataSetPart(props) {
         <Link to={"/taskList/" + props.dataSetId}>{props.dataSetInfo.info.name}</Link>
     )
 }
-
-export default withRouter(DataSetList)

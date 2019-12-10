@@ -10,7 +10,7 @@ import base64 from 'base-64'
 import { backEndUrl } from '../config'
 import { withRouter, Link } from "react-router-dom";
 
-class TaskList extends React.Component {
+export default class TaskList extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -35,20 +35,37 @@ class TaskList extends React.Component {
     }
     render() {
         const imageList = this.state.data.ImgIDs
-        const imageItemList = imageList.map((one) =>
-            <div key={one}>
-                {one + '.jpg'}
-                <Link to={"/taskDetail/" + this.props.match.params.dataSetId + "/" + one}>
-                    <LazyLoad height={500} imageProps={{
-                        src: dataStore.azurePath + this.props.match.params.dataSetId + '/images/' + one + '.jpg',
-                        alt: one + '.jpg',
-                        ref: "image",
-                        className: "className"
-                    }}
-                    />
-                </Link>
-            </div>
-        )
+        const imageItemList = []
+        for(var i = 0, len = imageList.length; i < len; i++){
+            imageItemList.push(
+                <div key={imageList[i]}>
+                    {imageList[i] + '.jpg'}
+                    <Link to={"/taskDetail/" + this.props.match.params.dataSetId + "/" + imageList[i]+'?next='+imageList[i+1]}>
+                        <LazyLoad height={500} imageProps={{
+                            src: dataStore.azurePath + this.props.match.params.dataSetId + '/images/' + imageList[i] + '.jpg',
+                            alt: imageList[i] + '.jpg',
+                            ref: "image",
+                            className: "className"
+                        }}
+                        />
+                    </Link>
+                </div>
+            )
+        }
+        // const imageItemList = imageList.map((one) =>
+        //     <div key={one}>
+        //         {one + '.jpg'}
+        //         <Link to={"/taskDetail/" + this.props.match.params.dataSetId + "/" + one}>
+        //             <LazyLoad height={500} imageProps={{
+        //                 src: dataStore.azurePath + this.props.match.params.dataSetId + '/images/' + one + '.jpg',
+        //                 alt: one + '.jpg',
+        //                 ref: "image",
+        //                 className: "className"
+        //             }}
+        //             />
+        //         </Link>
+        //     </div>
+        // )
         // <li key={one.toString()}>{one}
         //     <img src={dataStore.azurePath + '034e7bdc-01e0-42fe-9d03-ff1c0895d182' + '/images/' + one + '.jpg'} /></li>
 
@@ -62,5 +79,3 @@ class TaskList extends React.Component {
         )
     }
 }
-
-export default withRouter(TaskList)

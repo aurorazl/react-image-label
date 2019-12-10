@@ -16,7 +16,7 @@ export default class App extends React.Component {
   }
   render() {
     return (
-      <div>
+
         <Router basename='/image_label/'>
           <Switch>
             <Route exact path="/" component={dataSetList} />
@@ -24,7 +24,7 @@ export default class App extends React.Component {
             <Route exact path="/taskDetail/:dataSetId/:taskId" component={TaskDetail} />
           </Switch>
         </Router>
-      </div>
+
     )
   }
 }
