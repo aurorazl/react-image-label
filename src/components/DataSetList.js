@@ -50,9 +50,7 @@ export default class DataSetList extends React.Component {
                 () => this.handleClose(),
                 3000
             );
-        } else {
-            window.location.href = backEndUrl
-        }
+        } 
     }
     handleClick(newstate) {
         this.setState({ open: true, vertical: 'top', horizontal: 'left' })
@@ -65,8 +63,7 @@ export default class DataSetList extends React.Component {
         axios.get(backEndUrl + 'api/image', { headers: { 'Authorization': "Bearer " + cookie.load("token") } }).then(
             function (response) {
                 if (response.status == 200) {
-                    console.log(base64.decode(response.data))
-                    _this.setState({ data: JSON.parse(base64.decode(response.data)).Data })
+                    _this.setState({ data: JSON.parse(new Buffer(response.data, 'base64').toString()).Data })
                 }
             }
         )
