@@ -43,7 +43,6 @@ export default class DataSetList extends React.Component {
     }
     saveToken() {
         const token = new URLSearchParams(this.props.location.search).get("token");
-        console.log(token, cookie.load("token"))
         if (token != null) {
             cookie.save("token", token)
             this.handleClick({ vertical: 'top', horizontal: 'left' })
@@ -51,6 +50,8 @@ export default class DataSetList extends React.Component {
                 () => this.handleClose(),
                 3000
             );
+        } else {
+            window.location.href = backEndUrl
         }
     }
     handleClick(newstate) {
