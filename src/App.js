@@ -16,15 +16,13 @@ export default class App extends React.Component {
   }
   render() {
     return (
-
-        <Router basename='/image_label/'>
-          <Switch>
-            <Route exact path="/" component={dataSetList} />
-            <Route exact path="/taskList/:dataSetId" component={TaskList} />
-            <Route exact path="/taskDetail/:dataSetId/:taskId" component={TaskDetail} />
-          </Switch>
-        </Router>
-
+      <Router basename='/image_label/'>
+        <Switch>
+          <Route exact path="/" component={dataSetList} />
+          <Route exact path="/taskList/:dataSetId" component={TaskList} />
+          <Route exact path="/taskDetail/:dataSetId/:taskId" component={TaskDetail} />
+        </Switch>
+      </Router>
     )
   }
 }

@@ -125,6 +125,8 @@ function DataSetPart(props) {
         // <ListItemLink to={"/taskList/" + props.dataSetId}>
         //     <ListItemText primary={props.dataSetInfo.info.name} />
         // </ListItemLink>
-        <Link to={"/taskList/" + props.dataSetId}>{props.dataSetInfo.info.name}</Link>
+        <div>
+            <Link to={"/taskList/" + props.dataSetId}>{props.dataSetInfo.info.name}</Link>
+        </div>
     )
 }
