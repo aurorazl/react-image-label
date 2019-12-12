@@ -27,6 +27,7 @@ export default class TaskList extends React.Component {
             function (response) {
                 console.log(response)
                 if (response.status == 200) {
+                    console.log("start", JSON.parse(base64.decode(response.data)))
                     _this.setState({ data: JSON.parse(base64.decode(response.data)).Data })
 
                 }
@@ -34,6 +35,7 @@ export default class TaskList extends React.Component {
         )
     }
     render() {
+        console.log(this.state)
         const imageList = this.state.data.ImgIDs
         const imageItemList = imageList.map((one) =>
             <div key={one}>
