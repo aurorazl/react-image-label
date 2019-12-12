@@ -50,7 +50,7 @@ export default class DataSetList extends React.Component {
                 () => this.handleClose(),
                 3000
             );
-        } 
+        }
     }
     handleClick(newstate) {
         this.setState({ open: true, vertical: 'top', horizontal: 'left' })
@@ -122,7 +122,7 @@ function DataSetPart(props) {
         // <ListItemLink to={"/taskList/" + props.dataSetId}>
         //     <ListItemText primary={props.dataSetInfo.info.name} />
         // </ListItemLink>
-        <div>
+        <div style={{ margin: "25px 0" }}>
             <Link to={"/taskList/" + props.dataSetId}>{props.dataSetInfo.info.name}</Link>
         </div>
     )

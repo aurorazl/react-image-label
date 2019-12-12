@@ -25,11 +25,8 @@ export default class TaskList extends React.Component {
         var _this = this
         axios.get(backEndUrl + 'api/image/' + this.props.match.params.dataSetId, { headers: { 'Authorization': "Bearer " + cookie.load("token") } }).then(
             function (response) {
-                console.log(response)
                 if (response.status == 200) {
-                    console.log("start", JSON.parse(base64.decode(response.data)))
                     _this.setState({ data: JSON.parse(base64.decode(response.data)).Data })
-
                 }
             }
         )
@@ -41,7 +38,7 @@ export default class TaskList extends React.Component {
             <div key={one}>
                 {one + '.jpg'}
                 <Link to={"/taskDetail/" + this.props.match.params.dataSetId + "/" + one}>
-                    <LazyLoad height={500} imageProps={{
+                    <LazyLoad height={762} offsetTop={200} imageProps={{
                         src: dataStore.azurePath + this.props.match.params.dataSetId + '/images/' + one + '.jpg',
                         alt: one + '.jpg',
                         ref: "image",
