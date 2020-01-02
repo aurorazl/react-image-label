@@ -126,7 +126,7 @@ class Canvas extends Component {
 
   renderFigure(figure, options) {
     const Comp = figure.type === 'bbox' ? BBoxFigure : PolygonFigure;
-
+    console.log('figure', figure)
     return (
       <Comp
         key={figure.id}

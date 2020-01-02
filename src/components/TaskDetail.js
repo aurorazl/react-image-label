@@ -46,14 +46,15 @@ export default class TaskDetail extends React.Component {
     }
     getData() {
         var _this = this
-        axios.get(backEndUrl + 'api/image/' + this.props.match.params.dataSetId + '/' + this.props.match.params.taskId,
+        axios.get(backEndUrl + 'api/projects/E07A5E18-6CF9-4863-999B-166AAE5C794D/datasets/' + this.props.match.params.dataSetId + '/tasks/annotations/' + this.props.match.params.taskId,
             { headers: { 'Authorization': "Bearer " + cookie.load("token") } }).then(
                 function (response) {
                     if (response.status == 200) {
-                        var data = JSON.parse(base64.decode(response.data)).Data
+                        // var data = JSON.parse(base64.decode(response.data)).Data
+                        var data = []
                         var a = []
                         var formParts = {}
-                        if (data) {
+                        if (false) {
                             _this.imageInfo = data.images
                             console.log("start transform")
                             var ann = data.annotations
@@ -89,28 +90,30 @@ export default class TaskDetail extends React.Component {
                             for (var p in formParts) {
                                 a.push({ id: p, type: formParts[p][0].type, name: dataStore.coco_classes[p] })
                             }
-                        } else {
+                        }
+                        else {
                             _this.imageInfo = { "file_name": _this.props.match.params.taskId + '.jpg' }
                         }
-
-                        _this.setState({
-                            isLoaded: true,
-                            project: {
-                                "form": { formParts: a }, id: 1, name: "Test", referenceLink: null, referenceText: null
-                            },
-                            image: {
-                                externalLink: null, id: 4, labeld: 1, lastEdited: 1575603884857,
-                                link: dataStore.azurePath + _this.props.match.params.dataSetId + '/images/' + _this.props.match.params.taskId + '.jpg',
-                                localPath: null, originalName: _this.props.match.params.taskId + ".jpg", projectsId: 1,
-                                labelData: {
-                                    height: 480, width: 640,
-                                    labels: formParts
-                                }
-                            }
-                        });
-                    } else {
-                        window.location.href = backEndUrl
                     }
+                    else {
+                        console.log("here")
+                        _this.imageInfo = { "file_name": _this.props.match.params.taskId + '.jpg' }
+                    }
+                    _this.setState({
+                        isLoaded: true,
+                        project: {
+                            "form": { formParts: a }, id: 1, name: "Test", referenceLink: null, referenceText: null
+                        },
+                        image: {
+                            externalLink: null, id: 4, labeld: 1, lastEdited: 1575603884857,
+                            link: dataStore.azurePath + _this.props.match.params.dataSetId + '/images/' + _this.props.match.params.taskId + '.jpg',
+                            localPath: null, originalName: _this.props.match.params.taskId + ".jpg", projectsId: 1,
+                            labelData: {
+                                height: 480, width: 640,
+                                labels: formParts
+                            }
+                        }
+                    });
                 }
             )
     }
@@ -141,7 +144,7 @@ export default class TaskDetail extends React.Component {
     }
     componentDidMount() {
         this.getData();
-        this.getTaskList()
+        // this.getTaskList()
     }
     componentDidUpdate(prevProps) {
         if (prevProps.match.params.taskId !== this.props.match.params.taskId) {

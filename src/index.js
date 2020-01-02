@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import LazyLoadPage from './components/app'
+import Test from './components/test'
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
